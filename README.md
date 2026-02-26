@@ -22,6 +22,8 @@ claude mcp add walking-pad -- python -m walking_with_claude
 | **Connection** | Bluetooth Low Energy (FFF0 service) |
 
 > Other Sperax models using the same BLE protocol may also work. The BLE device name must be `SPERAX_RM01`.
+>
+> Verify your pad works with the [Web Bluetooth test page](https://nathanabrewer.github.io/sperax-rm01/) (Chrome required).
 
 ## What happens
 
