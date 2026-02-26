@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "walking-with-claude"
+version = "0.1.0"
+description = "Claude controls your walking pad. When Claude works, you walk."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Nathan Brewer" },
+    { name = "Naithan Claude" },
+]
+keywords = ["claude", "mcp", "walking-pad", "sperax", "ble", "bluetooth"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Home Automation",
+]
+dependencies = [
+    "mcp>=1.0",
+    "sperax-rm01 @ git+https://github.com/nathanabrewer/sperax-rm01.git",
+]
+
+[project.scripts]
+walking-daemon = "walking_with_claude.daemon:main"
+walking-hook = "walking_with_claude.hook:main"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[project.urls]
+Homepage = "https://github.com/nathanabrewer/walking-with-claude"
+Repository = "https://github.com/nathanabrewer/walking-with-claude"
+"BLE Library" = "https://github.com/nathanabrewer/sperax-rm01"
