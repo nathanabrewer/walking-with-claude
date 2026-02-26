@@ -57,7 +57,7 @@ Under the hood it uses the [sperax-rm01](https://github.com/nathanabrewer/sperax
 
 ## The story
 
-Started by reverse engineering a walking pad's Bluetooth protocol — decompiling its Flutter app, cracking a CRC-16 algorithm, and testing commands on live hardware. Then we thought: what if Claude controlled the pad? When Claude works on your code, you walk. When Claude stops, you stop. Claude drives.
+[Read the full story →](STORY.md)
 
 Built by Nathan and Claude, so Nathan can try to keep up.
 
