@@ -11,9 +11,11 @@ claude mcp add walking-pad -- python -m walking_with_claude
 
 ## Compatible device
 
+[<img src="https://sperax.com/cdn/shop/files/P1_1.jpg?v=1767170824&width=2880" width="400" alt="Sperax Walking Vibration Pad">](https://sperax.com/products/p1-walking-vibration-pad?variant=51576446091548)
+
 | | |
 |---|---|
-| **Product** | [Sperax Walking Vibration Pad (4-in-1)](https://www.amazon.com/dp/B0DJ8ZL7RX) |
+| **Product** | [Sperax Walking Vibration Pad (4-in-1)](https://sperax.com/products/p1-walking-vibration-pad?variant=51576446091548) |
 | **Model** | WLT6200 (RM-01) |
 | **BLE name** | `SPERAX_RM01` |
 | **Manufacturer** | wi-linktech (Quanzhou WenTeLai) |
@@ -56,3 +58,9 @@ Under the hood it uses the [sperax-rm01](https://github.com/nathanabrewer/sperax
 Started by reverse engineering a walking pad's Bluetooth protocol — decompiling its Flutter app, cracking a CRC-16 algorithm, and testing commands on live hardware. Then we thought: what if Claude controlled the pad? When Claude works on your code, you walk. When Claude stops, you stop. Claude drives.
 
 Built by Nathan and Claude, so Nathan can try to keep up.
+
+## Vibes
+
+[![](https://img.youtube.com/vi/D8upY-3l0hA/0.jpg)](https://www.youtube.com/watch?v=D8upY-3l0hA)
+[![](https://img.youtube.com/vi/qEU_nlLxYXA/0.jpg)](https://www.youtube.com/watch?v=qEU_nlLxYXA)
+[![](https://img.youtube.com/vi/aSERfEISn_o/0.jpg)](https://www.youtube.com/watch?v=aSERfEISn_o)

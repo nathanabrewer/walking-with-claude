@@ -11,7 +11,6 @@ license = "MIT"
 requires-python = ">=3.10"
 authors = [
     { name = "Nathan Brewer" },
-    { name = "Naithan Claude" },
 ]
 keywords = ["claude", "mcp", "walking-pad", "sperax", "ble", "bluetooth"]
 classifiers = [

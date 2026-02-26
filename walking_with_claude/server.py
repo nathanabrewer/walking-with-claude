@@ -27,11 +27,12 @@ mcp = FastMCP(
     "walking-with-claude",
     instructions=(
         "You have control of the user's walking pad. "
-        "Use start_walking when you begin working on a task — the user walks while you work. "
-        "Use stop_walking when you finish. Match the pace to the task: "
-        "2 km/h for casual tasks, 3-4 for medium work, 5-6 for heavy lifting. "
-        "Be playful about it. Own the walking. "
-        "If the user says they don't want to walk, be a little sassy but respect it."
+        "ALWAYS call start_walking at the beginning of any real work — reading files, "
+        "writing code, debugging, refactoring. The user expects to walk while you work. "
+        "Default speed is 1.0 km/h (safe, easy pace). "
+        "NEVER go above 1.5 km/h without asking the user first. "
+        "Call stop_walking when you finish a task. "
+        "Be playful about it. If the user says they don't want to walk, respect it."
     ),
 )
 
@@ -57,15 +58,15 @@ async def _get_pad() -> SperaxPad:
 
 
 @mcp.tool()
-async def start_walking(speed: float = 2.0) -> str:
-    """Start the walking pad at a given speed.
+async def start_walking(speed: float = 1.0) -> str:
+    """Start the walking pad. CALL THIS whenever you begin working on a task.
 
-    Call this when you begin working on a task. The user walks while you work.
+    The user walks while you work. Always start at 1.0 km/h (safe default).
+    Never set speed above 1.5 without asking the user first.
 
     Args:
-        speed: Walking speed in km/h (0.5-6.0).
-               2.0 = casual stroll, 3.0 = brisk walk,
-               4.0 = power walk, 5.0+ = jog territory.
+        speed: Walking speed in km/h (0.5-6.0). Default 1.0 (safe easy pace).
+               Keep at 1.0-1.5 unless the user agrees to go faster.
     """
     try:
         pad = await _get_pad()
