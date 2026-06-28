@@ -2,6 +2,15 @@
 
 Claude controls your walking pad. When Claude works, you walk.
 
+## ⚡ Quickest install (Claude Code plugin)
+
+```
+/plugin marketplace add nathanabrewer/claude-plugins
+/plugin install walking-pad@th3redgiant
+```
+
+No MCP, no config, no restart — then just say "start the walking pad."
+
 ## Install
 
 ```bash
