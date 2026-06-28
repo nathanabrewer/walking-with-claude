@@ -43,6 +43,7 @@ DEVICE_NAME = "SPERAX_RM01"
 SPEED_MIN = 0.5
 SPEED_MAX = 6.0
 DEFAULT_SPEED = 1.0  # safe, easy pace (matches the MCP server default)
+STOP_MAX_ATTEMPTS = 3  # confirm-and-retry the stop this many times before warning
 
 # Status states the pad reports in a 0x0E frame (see PROTOCOL.md).
 _STATUS_NAMES = {0x00: "ready", 0x01: "running", 0x02: "idle", 0x03: "paused"}
@@ -94,14 +95,68 @@ async def cmd_pace(speed: float) -> int:
 
 
 async def cmd_stop() -> int:
+    """Stop the belt and CONFIRM it actually stopped before reporting success.
+
+    A pad that prints "stopped" while the belt keeps moving is a safety bug, so
+    we never trust the stop command blindly:
+
+      1. On a fresh connection the pad IGNORES run-control commands until it has
+         GRANTED control, so each attempt requests control first (this is why
+         the old blind single `stop()` could no-op on a moving belt yet still
+         print success).
+      2. After commanding stop we let the belt decelerate, then prompt a fresh
+         0x0E run-state frame and read it back. The library's stop() optimisti-
+         cally sets running=False, so we rely on the pad's OWN status frame --
+         a real "running" frame re-sets pad.running -- not on that flag alone.
+      3. If still running (or no state frame arrives) we retry. Only a confirmed
+         idle/paused/ready state prints success; otherwise we warn the user to
+         step off / use the physical button and exit non-zero.
+    """
+    state = {"last": None}
+
+    def on_notify(data: bytes) -> None:
+        if len(data) >= 5 and data[0] == 0xF5 and data[-1] == 0xFA and data[3] == 0x0E:
+            state["last"] = _STATUS_NAMES.get(data[4], f"0x{data[4]:02x}")
+
     pad = SperaxPad()
+    pad.on_notification = on_notify
     await pad.connect()
+    confirmed = False
     try:
-        await pad.stop()  # sends stop twice; clears running flag itself
-        print("Walking pad stopped. Belt is idle.")
+        for _ in range(STOP_MAX_ATTEMPTS):
+            # Grant control first so the run-control STOP is actually honored
+            # (a fresh connection has NOT granted control yet), then stop.
+            await pad.request_control()
+            await asyncio.sleep(0.3)
+            await pad.stop()              # sends the stop command twice
+            # Let the belt decelerate, then read back a FRESH run-state frame.
+            await asyncio.sleep(1.0)
+            state["last"] = None
+            await pad.request_control()   # prompts a 0x0E status frame
+            await asyncio.sleep(1.0)
+            # Confirmed only if the pad reports a stopped state AND its own
+            # running flag (re-set True by any "running" frame) is clear.
+            if state["last"] in ("idle", "paused", "ready") and not pad.running:
+                confirmed = True
+                break
+
+        if confirmed:
+            print("Walking pad stopped. Belt is idle.")
+            return 0
+
+        sys.stderr.write(
+            "WARNING: could not confirm the walking pad stopped.\n"
+            "  The belt may STILL BE MOVING -- step off now and press the\n"
+            "  physical STOP button on the pad.\n"
+        )
+        return 1
     finally:
-        await pad.disconnect()  # belt already stopped; safe to disconnect
-    return 0
+        # Force one more STOP via disconnect() as a last-ditch safety net:
+        # the library only stops on disconnect when it thinks it is running, so
+        # set the flag to guarantee that final command fires (harmless if the
+        # belt is already idle).
+        pad._running = True
+        await pad.disconnect()
 
 
 async def cmd_status() -> int:
