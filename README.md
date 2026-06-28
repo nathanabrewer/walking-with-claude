@@ -9,6 +9,29 @@ pip install git+https://github.com/nathanabrewer/walking-with-claude.git
 claude mcp add walking-pad -- python -m walking_with_claude
 ```
 
+## Install as a Skill (no MCP, no reset)
+
+Prefer a drop-in [Claude Code Skill](https://docs.claude.com/en/docs/claude-code/skills)
+over the MCP server? There's one in [`skill/walking-pad/`](skill/walking-pad).
+It drives the pad with a bundled one-shot `pad.py` — no MCP server, and adding
+it does not require restarting your Claude session.
+
+```bash
+# one-time: install the BLE driver
+pip install git+https://github.com/nathanabrewer/sperax-rm01.git
+
+# drop the skill into your personal skills folder
+mkdir -p ~/.claude/skills
+cp -r skill/walking-pad ~/.claude/skills/
+```
+
+Then just ask Claude to start walking. Behind the scenes the skill runs
+`python pad.py start|stop|pace <speed>|status`. The belt keeps running after each
+command exits, so a single `start` is enough.
+
+> macOS: the first BLE use prompts your terminal for Bluetooth permission
+> (System Settings > Privacy & Security > Bluetooth). Allow it, then retry.
+
 ## Compatible device
 
 [<img src="https://sperax.com/cdn/shop/files/P1_1.jpg?v=1767170824&width=2880" width="400" alt="Sperax Walking Vibration Pad">](https://sperax.com/products/p1-walking-vibration-pad?variant=51576446091548)
